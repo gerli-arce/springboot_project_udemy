@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yon.backend.cartapp.backendcartapp.models.entities.User;
+import com.yon.backend.cartapp.backendcartapp.models.request.UserRequest;
 import com.yon.backend.cartapp.backendcartapp.repositories.UserRepository;
 
 @Service
@@ -42,13 +43,12 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public Optional<User> update(User user, Long id) {
+    public Optional<User> update(UserRequest user, Long id) {
          Optional<User> o = findById(id);
          User userOptional = null;
         if(o.isPresent()){
             User userDb = o.orElseThrow();
             userDb.setUsername(user.getUsername());
-            userDb.setPassword(user.getPassword());
             userDb.setEmail(user.getEmail());
             userOptional = this.save(userDb);
             save(userDb);
