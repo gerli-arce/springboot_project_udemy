@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yon.backend.cartapp.backendcartapp.models.entities.User;
+import static com.yon.backend.cartapp.backendcartapp.auth.TokenJwtConfig.*;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,8 +41,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             user = new ObjectMapper().readValue(request.getInputStream(), User.class);
             username = user.getUsername();
             password = user.getPassword();
-            logger.info("Username desde request ImputStream (raw) " + username);
-            logger.info("Password desde request ImputStream (raw) " + password);
+            // logger.info("Username desde request ImputStream (raw) " + username);
+            // logger.info("Password desde request ImputStream (raw) " + password);
         } catch (StreamReadException e) {
             e.printStackTrace();
         } catch (DatabindException e) {
@@ -61,10 +62,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal())
                 .getUsername();
-        String originalInput = "token_." + username;
+        String originalInput = SECRET_KEY + username;
         String token = java.util.Base64.getEncoder().encodeToString(originalInput.getBytes());
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(HEADER_AUTORITATION, PREFIX_TOKEN + token);
 
         Map<String, Object> body = new HashMap<>();
         body.put("token", token);
